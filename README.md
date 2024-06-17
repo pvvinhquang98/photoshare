@@ -1,22 +1,25 @@
 # photoshare
 
-### Cài Đặt Frontend
+1. Cài Đặt Frontend`
 
-## photoproject->frontend
+photoproject->frontend(vao thu muc frontend)
 
-`Cài đặt các phụ thuộc`
+Cài đặt các phụ thuộc
 
-npm install
+`npm install`
 
-### Cài Đặt Backend
+2. Cài Đặt Backend
 
-pip install -r requirements.txt
+photoproject->backend
 
-# DOCKER
+`pip install -r requirements.txt`
 
-Cài đặt Docker: [Docker Installation Guide](https://www.docker.com/products/docker-desktop/)
+3. DOCKER
+
+Cài đặt Docker: [Docker](https://www.docker.com/products/docker-desktop/)
+
 Huong dan Docker Compose: [Docker Compose](https://docs.docker.com/compose/gettingstarted/)
 
-## Khởi Chạy Dịch Vụ
+Khởi Chạy Dịch Vụ
 
-docker-compose up --build
+`docker-compose up --build`
