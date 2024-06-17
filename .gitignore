@@ -1,0 +1,24 @@
+# .gitignore
+#nodejs
+node_modules
+npm-debug.log
+#osx
+.DS_Store
+#vscode
+.vscode
+#idea
+.idea
+#django
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+__pycache__/
+#docker
+*.log
+*.pid
+*.seed
+*.pid.lock
+#virtualenv
+venv/
+.env
