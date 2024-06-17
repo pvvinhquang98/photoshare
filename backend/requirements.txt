@@ -1,22 +1,9 @@
 # Django framework
 Django==5.0.6
-
-# Django REST framework for building APIs
 djangorestframework==3.15.1
-
-# PostgreSQL database adapter for Django
 psycopg2-binary==2.9.9
-
-# Django CORS Headers for handling Cross-Origin Resource Sharing (CORS)
 django-cors-headers== 4.3.1
-# Gunicorn for running the Django application in production
 gunicorn==22.0.0
-
-# Additional utilities for authentication and permissions
 djangorestframework-simplejwt==5.3.1
-
-# Environment variable management
-python-decouple==3.8
-
-# Linting and code quality tools
+python-decouple
 flake8
