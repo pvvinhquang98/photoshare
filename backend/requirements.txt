@@ -10,3 +10,4 @@ flake8
 graphene-django
 channels
 django-oauth-toolkit
+django-redis

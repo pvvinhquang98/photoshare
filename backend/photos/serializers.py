@@ -1,18 +1,26 @@
 from rest_framework import serializers
+from django.contrib.auth.models import User
 from .models import (
     Profile,
     Photo,
     Album,
-    Comment,
-    Notification,
-    Follow,
     Tag,
     PhotoTag,
-    Like,
-    Bookmark,
+    Follow,
+    Activity,
     ActivityLog,
-    Share,
+    Event,
+    EventAttendee,
+    Notification,
+    Permission,
+    UserPermission,
 )
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = "__all__"
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -25,29 +33,12 @@ class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
         fields = "__all__"
+        read_only_fields = ["user"]
 
 
 class AlbumSerializer(serializers.ModelSerializer):
     class Meta:
         model = Album
-        fields = "__all__"
-
-
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = "__all__"
-
-
-class NotificationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Notification
-        fields = "__all__"
-
-
-class FollowSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Follow
         fields = "__all__"
 
 
@@ -63,16 +54,17 @@ class PhotoTagSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class LikeSerializer(serializers.ModelSerializer):
+class FollowSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Like
+        model = Follow
         fields = "__all__"
 
 
-class BookmarkSerializer(serializers.ModelSerializer):
+class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Bookmark
+        model = Activity
         fields = "__all__"
+        read_only_fields = ["user"]
 
 
 class ActivityLogSerializer(serializers.ModelSerializer):
@@ -81,7 +73,47 @@ class ActivityLogSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ShareSerializer(serializers.ModelSerializer):
+class EventSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Share
+        model = Event
         fields = "__all__"
+
+
+class EventAttendeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventAttendee
+        fields = "__all__"
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = "__all__"
+
+
+class PermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
+        fields = "__all__"
+
+
+class UserPermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserPermission
+        fields = "__all__"
+
+
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "password"]
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data["username"],
+            email=validated_data["email"],
+            password=validated_data["password"],
+        )
+        return user

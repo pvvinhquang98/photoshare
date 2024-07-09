@@ -1,0 +1,33 @@
+/* src/styles/index.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply font-sans bg-gray-100;
+}
+
+h1 {
+  @apply text-2xl font-bold text-gray-800;
+}
+
+form {
+  @apply flex flex-col space-y-4;
+}
+
+form label {
+  @apply text-gray-700;
+}
+
+form input {
+  @apply px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300;
+}
+
+form button {
+  @apply px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600;
+}
+
+form button:hover {
+  @apply bg-blue-600;
+}
