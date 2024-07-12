@@ -1,66 +1,55 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 
-const Login = () => {
-    const { login, isAuthenticated } = useContext(AuthContext);
-    const [credentials, setCredentials] = useState({
-        username: '',
-        password: ''
-    });
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
-
-    const handleChange = (e) => {
-        setCredentials({ ...credentials, [e.target.name]: e.target.value });
-    };
+const Login = ({ onClose, onSwitchToRegister }) => {
+    const { login } = useContext(AuthContext);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        try {
-            await login(credentials);
-            if (isAuthenticated) {
-                navigate('/'); // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
-            }
-        } catch (error) {
-            setError('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
-        }
+        await login({ username, password });
+        onClose(); // Đóng modal sau khi đăng nhập thành công
     };
 
     return (
-        <div className="max-w-md mx-auto mt-8 bg-white p-6 rounded-md shadow-md">
-            <h2 className="text-2xl font-bold mb-6">Login</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label className="block mb-2">Username:</label>
+        <div className="flex justify-center items-center h-full">
+            <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md">
+                <h2 className="text-2xl font-bold mb-4">Đăng nhập</h2>
+                <div className="mb-4">
+                    <label className="block text-gray-700">Tên đăng nhập</label>
                     <input
                         type="text"
-                        name="username"
-                        value={credentials.username}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none"
                     />
                 </div>
-                <div>
-                    <label className="block mb-2">Password:</label>
+                <div className="mb-4">
+                    <label className="block text-gray-700">Mật khẩu</label>
                     <input
                         type="password"
-                        name="password"
-                        value={credentials.password}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none"
                     />
                 </div>
-                {error && <p className="text-red-500 mt-4">{error}</p>}
                 <button
                     type="submit"
-                    className="w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 mt-4"
+                    className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                 >
-                    Login
+                    Đăng nhập
                 </button>
+                <div className="mt-4 text-center">
+                    <span className="text-gray-600">Chưa có tài khoản?</span>
+                    <button
+                        type="button"
+                        className="text-blue-500 hover:underline ml-2"
+                        onClick={onSwitchToRegister}
+                    >
+                        Đăng ký
+                    </button>
+                </div>
             </form>
         </div>
     );

@@ -1,3 +1,5 @@
+# urls.py
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
@@ -12,11 +14,6 @@ from .views import (
     FollowViewSet,
     ActivityViewSet,
     ActivityLogViewSet,
-    EventViewSet,
-    EventAttendeeViewSet,
-    NotificationViewSet,
-    PermissionViewSet,
-    UserPermissionViewSet,
     UserRegistrationView,
 )
 
@@ -31,11 +28,6 @@ router.register(r"photo-tags", PhotoTagViewSet)
 router.register(r"follows", FollowViewSet)
 router.register(r"activities", ActivityViewSet)
 router.register(r"activity-logs", ActivityLogViewSet)
-router.register(r"permissions", PermissionViewSet)
-router.register(r"user-permissions", UserPermissionViewSet)
-router.register(r"events", EventViewSet)
-router.register(r"event-attendees", EventAttendeeViewSet)
-router.register(r"notifications", NotificationViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

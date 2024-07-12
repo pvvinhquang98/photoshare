@@ -16,24 +16,31 @@ from .models import (
     UserPermission,
 )
 
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = "__all__"
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from .models import Profile, Photo, Album, Tag, PhotoTag, Follow, Activity, ActivityLog
 
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = "__all__"
+        fields = ["name", "avatar", "bio", "website", "location", "birthdate"]
+
+
+class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
+
+    class Meta:
+        model = User
+        fields = ["id", "username", "email", "profile"]
 
 
 class PhotoSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = Photo
         fields = "__all__"
-        read_only_fields = ["user"]
 
 
 class AlbumSerializer(serializers.ModelSerializer):

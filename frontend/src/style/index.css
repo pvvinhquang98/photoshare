@@ -1,5 +1,5 @@
 /* src/styles/index.css */
-
+@import "tailwindcss/tailwind.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -30,4 +30,19 @@ form button {
 
 form button:hover {
   @apply bg-blue-600;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+.flex {
+  display: flex;
+}
+
+.ml-64 {
+  margin-left: 16rem;
 }

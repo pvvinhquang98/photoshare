@@ -4,6 +4,10 @@ from django.db import models
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, blank=True)
+    avatar = models.ImageField(
+        upload_to="avatars/", default="avatars/default_avatar.png"
+    )
     bio = models.TextField(blank=True)
     website = models.URLField(blank=True)
     location = models.CharField(max_length=255, blank=True)
