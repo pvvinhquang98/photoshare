@@ -11,3 +11,4 @@ graphene-django
 channels
 django-oauth-toolkit
 django-redis
+pillow
