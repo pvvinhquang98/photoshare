@@ -177,11 +177,3 @@ OAUTH2_PROVIDER = {
     "AUTHORIZATION_CODE_EXPIRE_SECONDS": 360,
     "ROTATE_REFRESH_TOKENS": True,
 }
-
-# Email configuration
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "wangphoto98@gmail.com"
-EMAIL_HOST_PASSWORD = "thanhvinh!1"

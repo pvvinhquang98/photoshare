@@ -1,3 +1,5 @@
+// src/components/auth/Register.js
+
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -6,12 +8,13 @@ const Register = ({ onClose, onSwitchToLogin }) => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [error, setError] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             await register({ username, email, password });
+            alert('Đăng ký thành công');
             onClose();
         } catch (err) {
             setError('Đăng ký thất bại. Vui lòng thử lại.');
@@ -30,6 +33,7 @@ const Register = ({ onClose, onSwitchToLogin }) => {
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         className="w-full px-4 py-2 border rounded-md focus:outline-none"
+                        required
                     />
                 </div>
                 <div className="mb-4">
@@ -39,6 +43,7 @@ const Register = ({ onClose, onSwitchToLogin }) => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="w-full px-4 py-2 border rounded-md focus:outline-none"
+                        required
                     />
                 </div>
                 <div className="mb-4">
@@ -48,6 +53,7 @@ const Register = ({ onClose, onSwitchToLogin }) => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="w-full px-4 py-2 border rounded-md focus:outline-none"
+                        required
                     />
                 </div>
                 <button

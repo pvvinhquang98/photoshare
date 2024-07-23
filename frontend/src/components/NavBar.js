@@ -13,7 +13,6 @@ const Navbar = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
     const [profile, setProfile] = useState(null);
-    const [showDropdown, setShowDropdown] = useState(false);
 
     useEffect(() => {
         if (isAuthenticated && user?.id) {
@@ -41,7 +40,6 @@ const Navbar = () => {
 
     const handleCloseModal = () => {
         setShowLoginModal(false);
-        setShowRegister(false);
     };
 
     const switchToRegister = () => {
@@ -54,7 +52,7 @@ const Navbar = () => {
 
     return (
         <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-10 flex items-center justify-between px-4 py-2">
-            <div ></div>
+            <div className="text-xl font-bold text-red-500">photoshare</div>
             <form onSubmit={handleSearch} className="flex items-center space-x-2">
                 <input
                     type="text"
@@ -73,35 +71,31 @@ const Navbar = () => {
             {!isAuthenticated ? (
                 <button className="text-blue-500" onClick={handleLoginClick}>Đăng nhập</button>
             ) : (
-                <div
-                    className="relative flex items-center space-x-4 cursor-pointer"
-                    onMouseEnter={() => setShowDropdown(true)}
-                    onMouseLeave={() => setShowDropdown(false)}
-                >
-                    <img
-                        src={profile?.avatar || 'https://via.placeholder.com/40'}
-                        alt="avatar"
-                        className="w-8 h-8 rounded-full"
-                    />
-                    <div className="text-gray-900 font-bold">
-                        Xin chào, {profile?.name ? profile.name : user.username}
-                    </div>
-                    {showDropdown && (
-                        <div className="fixed right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2">
-                            <button
-                                onClick={() => navigate('/profile')}
-                                className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-                            >
-                                Trang cá nhân
-                            </button>
-                            <button
-                                onClick={logout}
-                                className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-                            >
-                                Đăng xuất
-                            </button>
+                <div className="relative">
+                    <div className="flex items-center space-x-4">
+                        <img
+                            src={profile?.avatar || 'https://via.placeholder.com/40'}
+                            alt="avatar"
+                            className="w-8 h-8 rounded-full"
+                        />
+                        <div className="text-gray-900 font-bold">
+                            Xin chào, {profile?.name ? profile.name : "testuser"}
                         </div>
-                    )}
+                    </div>
+                    <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg">
+                        <button
+                            className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                            onClick={() => navigate('/profile')}
+                        >
+                            Trang cá nhân
+                        </button>
+                        <button
+                            className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                            onClick={logout}
+                        >
+                            Đăng xuất
+                        </button>
+                    </div>
                 </div>
             )}
             {showLoginModal && (

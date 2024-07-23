@@ -12,19 +12,8 @@ def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(
             user=instance,
-            name=f"{instance.username}{random.randint(1000, 9999)}",
-            bio="",
-            website="",
-            location="",
-            birthdate=None,
+            name=f"{instance.username}_{random.randint(1000, 9999)}",
         )
-
-
-@receiver(post_save, sender=User)
-def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-    instance.profile.save()
 
 
 @receiver(post_save, sender=User)

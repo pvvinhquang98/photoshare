@@ -8,8 +8,21 @@ const Login = ({ onClose, onSwitchToRegister }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await login({ username, password });
-        onClose();
+        try {
+            if(username === '') {
+                alert('Vui lòng nhập tên đăng nhập ');
+                return;
+            }
+            if(password === '') {
+                alert('Vui lòng nhập mật khẩu');
+                return;
+            }
+            await login({ username, password });
+            onClose();
+        }
+        catch (err) {
+            console.error('Đăng nhập thất bại', err);
+        }
     };
 
     return (
