@@ -13,6 +13,7 @@ const Navbar = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
     const [profile, setProfile] = useState(null);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     useEffect(() => {
         if (isAuthenticated && user?.id) {
@@ -50,6 +51,10 @@ const Navbar = () => {
         setShowRegister(false);
     };
 
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
     return (
         <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-10 flex items-center justify-between px-4 py-2">
             <div className="text-xl font-bold text-red-500">photoshare</div>
@@ -72,7 +77,7 @@ const Navbar = () => {
                 <button className="text-blue-500" onClick={handleLoginClick}>Đăng nhập</button>
             ) : (
                 <div className="relative">
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-4 cursor-pointer" onClick={toggleDropdown}>
                         <img
                             src={profile?.avatar || 'https://via.placeholder.com/40'}
                             alt="avatar"
@@ -82,20 +87,28 @@ const Navbar = () => {
                             Xin chào, {profile?.name ? profile.name : "testuser"}
                         </div>
                     </div>
-                    <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg">
-                        <button
-                            className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-                            onClick={() => navigate('/profile')}
-                        >
-                            Trang cá nhân
-                        </button>
-                        <button
-                            className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-                            onClick={logout}
-                        >
-                            Đăng xuất
-                        </button>
-                    </div>
+                    {isDropdownOpen && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg">
+                            <button
+                                className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                                onClick={() => navigate('/profile')}
+                            >
+                                Trang cá nhân
+                            </button>
+                            <button
+                                className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                                onClick={() => navigate('/edit-profile')}
+                            >
+                                Chỉnh sửa hồ sơ
+                            </button>
+                            <button
+                                className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                                onClick={logout}
+                            >
+                                Đăng xuất
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
             {showLoginModal && (
