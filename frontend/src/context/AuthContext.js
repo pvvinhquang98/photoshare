@@ -43,6 +43,7 @@ export const AuthProvider = ({ children }) => {
         delete axios.defaults.headers.common['Authorization'];
         setUser(null);
         setIsAuthenticated(false);
+        window.location.reload();
     };
 
     useEffect(() => {
