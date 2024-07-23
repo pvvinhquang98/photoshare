@@ -67,14 +67,17 @@ class PhotoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        user = self.request.user
         search_query = self.request.query_params.get("search", None)
+
         if search_query:
-            queryset = queryset.filter(
+            return Photo.objects.filter(
                 Q(caption__icontains=search_query)
-                | Q(tags__name__icontains=search_query)
+                | Q(tags__name__icontains=search_query),
+                Q(visibility="public") | Q(user=user),
             ).distinct()
-        return queryset
+
+        return Photo.objects.filter(Q(visibility="public") | Q(user=user)).distinct()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
