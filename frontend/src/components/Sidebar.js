@@ -1,8 +1,9 @@
+// src/components/Sidebar.js
 import React from 'react';
 
 const Sidebar = () => {
     return (
-        <div className="w-64 h-screen bg-white fixed top-0 left-0 flex flex-col shadow-lg z-10">
+        <div className="w-64 h-full bg-white fixed top-0 left-0 flex flex-col shadow-md z-10">
             <div className="flex items-center justify-center h-16 bg-red-500 text-white font-bold text-2xl">
                 photoshare
             </div>

@@ -1,8 +1,16 @@
+# views.py
+
 from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+)
 from django.contrib.auth.models import User
+from django.shortcuts import render
+from django.db.models import Q
 from .models import (
     Profile,
     Photo,
@@ -46,11 +54,27 @@ class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
+    def get_object(self):
+        try:
+            return Profile.objects.get(user_id=self.kwargs["pk"])
+        except Profile.DoesNotExist:
+            raise Http404("Profile does not exist")
+
 
 class PhotoViewSet(viewsets.ModelViewSet):
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.query_params.get("search", None)
+        if search_query:
+            queryset = queryset.filter(
+                Q(caption__icontains=search_query)
+                | Q(tags__name__icontains=search_query)
+            ).distinct()
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -59,7 +83,17 @@ class PhotoViewSet(viewsets.ModelViewSet):
 class PublicPhotoViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Photo.objects.filter(visibility="public")
     serializer_class = PhotoSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.query_params.get("search", None)
+        if search_query:
+            queryset = queryset.filter(
+                Q(caption__icontains=search_query)
+                | Q(tags__name__icontains=search_query)
+            ).distinct()
+        return queryset
 
 
 class PublicPhotoDetail(generics.RetrieveAPIView):
@@ -133,3 +167,11 @@ class UserRegistrationView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CurrentUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)

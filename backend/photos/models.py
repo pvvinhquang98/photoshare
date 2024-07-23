@@ -19,6 +19,13 @@ class Profile(models.Model):
         return self.user.username
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Photo(models.Model):
     VISIBILITY_CHOICES = [("public", "Public"), ("private", "Private")]
 
@@ -29,6 +36,7 @@ class Photo(models.Model):
     visibility = models.CharField(
         max_length=7, choices=VISIBILITY_CHOICES, default="public"
     )
+    tags = models.ManyToManyField(Tag, related_name="photos", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -45,13 +53,6 @@ class Album(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-
-    def __str__(self):
-        return self.name
 
 
 class PhotoTag(models.Model):

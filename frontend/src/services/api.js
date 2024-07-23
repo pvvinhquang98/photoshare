@@ -1,22 +1,11 @@
-// src/services/api.js
-
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api'; // Đặt URL API của bạn ở đây
+export const loginUser = async (credentials) => {
+    const response = await axios.post('http://127.0.0.1:8000/api/token/', credentials);
+    return response;
+};
 
-// token cho axios
-const token = localStorage.getItem('token');
-if (token) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-}
-// Đăng ký người dùng
-export const registerUser = (userData) => {
-    return axios.post(`${API_URL}/register/`, userData);
+export const registerUser = async (userData) => {
+    const response = await axios.post('http://127.0.0.1:8000/api/register/', userData);
+    return response;
 };
-// Đăng nhập người dùng
-export const loginUser = (credentials) => {
-    return axios.post(`${API_URL}/token/`, credentials);
-};
-export const getPublicPhotos = () => {
-    return axios.get(`${API_URL}/public-photos/`);
-}

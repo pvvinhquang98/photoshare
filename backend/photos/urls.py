@@ -15,6 +15,7 @@ from .views import (
     ActivityViewSet,
     ActivityLogViewSet,
     UserRegistrationView,
+    CurrentUserView,  # Import CurrentUserView
 )
 
 router = DefaultRouter()
@@ -37,4 +38,7 @@ urlpatterns = [
         PublicPhotoDetail.as_view(),
         name="public-photo-detail",
     ),
+    path(
+        "auth/user/", CurrentUserView.as_view(), name="current-user"
+    ),  # Add new endpoint
 ]

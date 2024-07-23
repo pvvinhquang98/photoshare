@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 
-const Register = ({ onClose,onSwitchToLogin }) => {
+const Register = ({ onClose, onSwitchToLogin }) => {
     const { register } = useContext(AuthContext);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -10,7 +10,7 @@ const Register = ({ onClose,onSwitchToLogin }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         await register({ username, email, password });
-        onClose(); // Đóng modal sau khi đăng ký thành công
+        onClose();
     };
 
     return (
@@ -50,16 +50,9 @@ const Register = ({ onClose,onSwitchToLogin }) => {
                 >
                     Đăng ký
                 </button>
-                <div className="mt-4 text-center">
-                    <span className="text-gray-600">bạn đã có tài khoản</span>
-                    <button
-                        type="button"
-                        className="text-blue-500 hover:underline ml-2"
-                        onClick={onSwitchToLogin}
-                    >
-                        Đăng ký
-                    </button>
-                </div>
+                <p className="mt-4 text-center">
+                    Đã có tài khoản? <span onClick={onSwitchToLogin} className="text-blue-500 cursor-pointer">Đăng nhập</span>
+                </p>
             </form>
         </div>
     );

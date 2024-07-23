@@ -9,7 +9,7 @@ const Login = ({ onClose, onSwitchToRegister }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         await login({ username, password });
-        onClose(); // Đóng modal sau khi đăng nhập thành công
+        onClose();
     };
 
     return (
@@ -40,16 +40,9 @@ const Login = ({ onClose, onSwitchToRegister }) => {
                 >
                     Đăng nhập
                 </button>
-                <div className="mt-4 text-center">
-                    <span className="text-gray-600">Chưa có tài khoản?</span>
-                    <button
-                        type="button"
-                        className="text-blue-500 hover:underline ml-2"
-                        onClick={onSwitchToRegister}
-                    >
-                        Đăng ký
-                    </button>
-                </div>
+                <p className="mt-4 text-center">
+                    Chưa có tài khoản? <span onClick={onSwitchToRegister} className="text-blue-500 cursor-pointer">Đăng ký</span>
+                </p>
             </form>
         </div>
     );

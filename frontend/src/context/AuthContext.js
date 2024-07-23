@@ -1,6 +1,4 @@
-// src/context/AuthContext.js
-
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { loginUser, registerUser } from '../services/api';
 
@@ -13,7 +11,10 @@ export const AuthProvider = ({ children }) => {
     const register = async (userData) => {
         try {
             const response = await registerUser(userData);
-            setUser(response.data);
+            const token = response.data.access;
+            localStorage.setItem('token', token);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            setUser(response.data.user); // Giả định `response.data.user` chứa thông tin người dùng
             setIsAuthenticated(true);
         } catch (error) {
             console.error('Đăng ký thất bại', error);
@@ -28,13 +29,8 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('token', token); // Lưu token vào localStorage
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Thiết lập token cho các yêu cầu tiếp theo
 
-            // Giả định user data được trả về trong response khi login thành công
-            const userData = {
-                username: credentials.username, // Thay đổi theo dữ liệu trả về thực tế
-                // Add more fields if necessary
-            };
-
-            setUser(userData);
+            const userResponse = await axios.get('http://127.0.0.1:8000/api/auth/user/');
+            setUser(userResponse.data); // Đảm bảo `response.data.user` chứa thông tin người dùng
             setIsAuthenticated(true);
         } catch (error) {
             console.error('Đăng nhập thất bại', error);
@@ -48,6 +44,22 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setIsAuthenticated(false);
     };
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            axios.get('http://127.0.0.1:8000/api/auth/user/')
+                .then(response => {
+                    setUser(response.data);
+                    setIsAuthenticated(true);
+                })
+                .catch(error => {
+                    console.error('Error fetching user:', error);
+                    setIsAuthenticated(false);
+                });
+        }
+    }, []);
 
     return (
         <AuthContext.Provider value={{ user, isAuthenticated, register, login, logout }}>
