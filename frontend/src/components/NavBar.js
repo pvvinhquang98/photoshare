@@ -41,6 +41,7 @@ const Navbar = () => {
 
     const handleCloseModal = () => {
         setShowLoginModal(false);
+        setShowRegister(false); // Ensure modal switches back to login if closed and reopened
     };
 
     const switchToRegister = () => {
@@ -55,9 +56,27 @@ const Navbar = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
+    const handleOutsideClick = (e) => {
+        if (e.target.closest('.profile-dropdown') === null) {
+            setIsDropdownOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        if (isDropdownOpen) {
+            document.addEventListener('click', handleOutsideClick);
+        } else {
+            document.removeEventListener('click', handleOutsideClick);
+        }
+
+        return () => {
+            document.removeEventListener('click', handleOutsideClick);
+        };
+    }, [isDropdownOpen]);
+
     return (
         <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-10 flex items-center justify-between px-4 py-2">
-            <div className="text-xl font-bold text-red-500">photoshare</div>
+            <div className="text-xl font-bold text-red-500 cursor-pointer" onClick={() => navigate('/')}>photoshare</div>
             <form onSubmit={handleSearch} className="flex items-center space-x-2">
                 <input
                     type="text"
@@ -76,7 +95,7 @@ const Navbar = () => {
             {!isAuthenticated ? (
                 <button className="text-blue-500" onClick={handleLoginClick}>Đăng nhập</button>
             ) : (
-                <div className="relative">
+                <div className="relative profile-dropdown">
                     <div className="flex items-center space-x-4 cursor-pointer" onClick={toggleDropdown}>
                         <img
                             src={profile?.avatar || 'https://via.placeholder.com/40'}

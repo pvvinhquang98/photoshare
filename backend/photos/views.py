@@ -1,15 +1,7 @@
-# views.py
-
 from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-import random
-
-from rest_framework.permissions import (
-    AllowAny,
-    IsAuthenticated,
-    IsAuthenticatedOrReadOnly,
-)
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.db.models import Q
@@ -56,12 +48,6 @@ class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
-    def get_object(self):
-        try:
-            return Profile.objects.get(user_id=self.kwargs["pk"])
-        except Profile.DoesNotExist:
-            raise Http404("Profile does not exist")
-
 
 class PhotoViewSet(viewsets.ModelViewSet):
     queryset = Photo.objects.all()
@@ -69,17 +55,14 @@ class PhotoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
+        queryset = super().get_queryset()
         search_query = self.request.query_params.get("search", None)
-
         if search_query:
-            return Photo.objects.filter(
+            queryset = queryset.filter(
                 Q(caption__icontains=search_query)
-                | Q(tags__name__icontains=search_query),
-                Q(visibility="public") | Q(user=user),
+                | Q(tags__name__icontains=search_query)
             ).distinct()
-
-        return Photo.objects.filter(Q(visibility="public") | Q(user=user)).distinct()
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -88,7 +71,7 @@ class PhotoViewSet(viewsets.ModelViewSet):
 class PublicPhotoViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Photo.objects.filter(visibility="public")
     serializer_class = PhotoSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -169,7 +152,8 @@ class UserRegistrationView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
-            User = serializer.save()
+            user = serializer.save()
+            Profile.objects.create(user=user)  # Create profile after user is created
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -16,7 +16,6 @@ const Register = ({ onClose, onSwitchToLogin }) => {
             await register({ username, email, password });
             alert('Đăng ký thành công');
             onClose();
-
         } catch (err) {
             setError('Đăng ký thất bại. Vui lòng thử lại.');
         }
