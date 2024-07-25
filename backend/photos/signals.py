@@ -1,3 +1,5 @@
+# signals.py
+
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
@@ -11,10 +13,6 @@ def create_profile(sender, instance, created, **kwargs):
         Profile.objects.create(
             user=instance,
             name=f"{instance.username}_{random.randint(1000, 9999)}",
-            bio="",
-            website="",
-            location="",
-            birthdate=None,
         )
 
 

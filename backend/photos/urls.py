@@ -15,7 +15,7 @@ from .views import (
     ActivityViewSet,
     ActivityLogViewSet,
     UserRegistrationView,
-    CurrentUserView,
+    CurrentUserView,  # Import CurrentUserView
 )
 
 router = DefaultRouter()
@@ -33,10 +33,12 @@ router.register(r"activity-logs", ActivityLogViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("register/", UserRegistrationView.as_view(), name="register"),
-    path("auth/user/", CurrentUserView.as_view(), name="current-user"),
     path(
         "public-photos/<int:id>/",
         PublicPhotoDetail.as_view(),
         name="public-photo-detail",
     ),
+    path(
+        "auth/user/", CurrentUserView.as_view(), name="current-user"
+    ),  # Add new endpoint
 ]

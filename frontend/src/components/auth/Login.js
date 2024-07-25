@@ -9,19 +9,19 @@ const Login = ({ onClose, onSwitchToRegister }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            if (username === '') {
-                alert('Vui lòng nhập tên đăng nhập');
+            if(username === '') {
+                alert('Vui lòng nhập tên đăng nhập ');
                 return;
             }
-            if (password === '') {
+            if(password === '') {
                 alert('Vui lòng nhập mật khẩu');
                 return;
             }
             await login({ username, password });
             onClose();
-        } catch (err) {
+        }
+        catch (err) {
             console.error('Đăng nhập thất bại', err);
-            alert('Đăng nhập thất bại. Vui lòng kiểm tra lại tên đăng nhập và mật khẩu.');
         }
     };
 
