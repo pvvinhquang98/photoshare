@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "photos",
     "rest_framework",
+    "rest_framework.authtoken",
     "graphene_django",
     "channels",
     "oauth2_provider",
@@ -52,18 +53,22 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "photos.middleware.CsrfExemptMiddleware",
 ]
 # CORS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://127.0.0.1:8000",
 ]
-
+# Thêm URL vào danh sách bỏ qua CSRF
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000"]
+CSRF_EXEMPT_URLS = ["admin/"]
 ROOT_URLCONF = "myproject.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "photos/templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -164,6 +169,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [

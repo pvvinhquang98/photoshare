@@ -1,18 +1,29 @@
 # views.py
-
+from django.http import Http404, HttpResponse
 from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-import random
-
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
+from django.shortcuts import render
+from django.db.models import Q
+from django.utils.decorators import method_decorator
+from django.views import View
+import json
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
     IsAuthenticatedOrReadOnly,
 )
-from django.contrib.auth.models import User
-from django.shortcuts import render
-from django.db.models import Q
+from rest_framework.decorators import (
+    api_view,
+    permission_classes,
+    authentication_classes,
+)
 from .models import (
     Profile,
     Photo,
@@ -180,3 +191,76 @@ class CurrentUserView(APIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
+
+
+@csrf_exempt
+def custom_admin_login(request):
+    if request.method == "POST":
+        if request.content_type == "application/json":
+            data = json.loads(request.body)
+            username = data.get("username")
+            password = data.get("password")
+        else:
+            username = request.POST.get("username")
+            password = request.POST.get("password")
+
+        if not username or not password:
+            return JsonResponse(
+                {"status": "error", "message": "Missing username or password"},
+                status=400,
+            )
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None and user.is_staff:
+            login(request, user)
+            token, created = Token.objects.get_or_create(user=user)
+            return JsonResponse({"status": "success", "token": str(token.key)})
+        else:
+            return JsonResponse(
+                {"status": "error", "message": "Invalid credentials"}, status=400
+            )
+    return JsonResponse({"status": "error", "message": "Invalid method"}, status=400)
+
+
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def user_management(request):
+    users = User.objects.all().values("id", "username", "email", "is_active")
+    return JsonResponse(list(users), safe=False)
+
+
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def recent_activity(request):
+    activities = User.objects.all().values("username", "last_login", "date_joined")
+    return JsonResponse(list(activities), safe=False)
+
+
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def current_user(request):
+    user = request.user
+    data = {
+        "username": user.username,
+        "email": user.email,
+        # Thêm thông tin khác nếu cần thiết
+    }
+    return JsonResponse(data)
+
+
+@csrf_exempt
+@api_view(["DELETE"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def delete_user(request, username):
+    try:
+        user = User.objects.get(username=username)
+        user.delete()
+        return JsonResponse({"status": "success", "message": "User deleted"})
+    except User.DoesNotExist:
+        return JsonResponse(
+            {"status": "error", "message": "User not found"}, status=404
+        )
